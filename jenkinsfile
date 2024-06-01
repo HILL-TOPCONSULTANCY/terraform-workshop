@@ -1,0 +1,166 @@
+
+pipeline {
+    agent any
+
+    tools {
+        terraform 'Terraform'
+    }
+
+    environment {
+        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+    }
+
+    stages {
+        stage('Git checkout from prod branch') {
+            steps {
+                echo 'Cloning project codebase...'
+                git branch: 'main', url: 'https://github.com/YOUR_GITHUB_USERNAME/aws-terraform-jenkins.git'
+                sh 'ls'
+            }
+        }
+
+        stage('Verifying AWS Configuration') {
+            steps {
+                sh 'aws s3 ls'
+            }
+        }
+
+        stage('Verify Terraform Version') {
+            steps {
+                echo 'Verifying the Terraform version...'
+                sh 'terraform --version'
+            }
+        }
+
+        stage('Terraform init EC2') {
+            steps {
+                echo 'Initializing Terraform for EC2...'
+                sh '''
+                cd ec2
+                terraform init
+                '''
+            }
+        }
+
+        stage('Terraform validate EC2') {
+            steps {
+                echo 'Validating Terraform configuration for EC2...'
+                sh '''
+                cd ec2
+                terraform validate
+                '''
+            }
+        }
+
+        stage('Terraform plan EC2') {
+            steps {
+                echo 'Planning Terraform deployment for EC2...'
+                sh '''
+                cd ec2
+                terraform plan -var-file="terraform.tfvars"
+                '''
+            }
+        }
+
+        stage('Manual Approval for EC2') {
+            steps {
+                script {
+                    def userInput = input(id: 'Proceed1', message: 'Approve Terraform Apply for EC2?', parameters: [
+                        [$class: 'TextParameterDefinition', defaultValue: 'Yes', description: 'Type Yes to approve', name: 'Approval']
+                    ])
+                    if (userInput['Approval'] != 'Yes') {
+                        error "Pipeline aborted by user"
+                    }
+                }
+            }
+        }
+
+        stage('Terraform apply EC2') {
+            steps {
+                echo 'Applying Terraform configuration for EC2...'
+                sh '''
+                cd ec2
+                terraform apply -var-file="terraform.tfvars" --auto-approve
+                '''
+            }
+        }
+
+        stage('Terraform init S3') {
+            steps {
+                echo 'Initializing Terraform for S3...'
+                sh '''
+                cd s3
+                terraform init
+                '''
+            }
+        }
+
+        stage('Terraform validate S3') {
+            steps {
+                echo 'Validating Terraform configuration for S3...'
+                sh '''
+                cd s3
+                terraform validate
+                '''
+            }
+        }
+
+        stage('Terraform plan S3') {
+            steps {
+                echo 'Planning Terraform deployment for S3...'
+                sh '''
+                cd s3
+                terraform plan -var-file="terraform.tfvars"
+                '''
+            }
+        }
+
+        stage('Manual Approval for S3') {
+            steps {
+                script {
+                    def userInput = input(id: 'Proceed2', message: 'Approve Terraform Apply for S3?', parameters: [
+                        [$class: 'TextParameterDefinition', defaultValue: 'Yes', description: 'Type Yes to approve', name: 'Approval']
+                    ])
+                    if (userInput['Approval'] != 'Yes') {
+                        error "Pipeline aborted by user"
+                    }
+                }
+            }
+        }
+
+        stage('Terraform apply S3') {
+            steps {
+                echo 'Applying Terraform configuration for S3...'
+                sh '''
+                cd s3
+                terraform apply -var-file="terraform.tfvars" --auto-approve
+                '''
+            }
+        }
+
+        stage('Manual approval to Delete Resources') {
+            steps {
+                input 'Approval required to clean environment'
+            }
+        }
+
+        stage('Terraform Destroy') {
+            steps {
+                echo 'Destroying Terraform-managed infrastructure...'
+                sh '''
+                cd ec2
+                terraform destroy -var-file="terraform.tfvars" --auto-approve
+                cd ../s3
+                terraform destroy -var-file="terraform.tfvars" --auto-approve
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline finished'
+        }
+    }
+}
