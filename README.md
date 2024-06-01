@@ -20,8 +20,8 @@ Before you begin, ensure you have the following prerequisites:
 Update the package index and install Git:
 
 ```sh
-sudo apt-get update
-sudo apt-get install git -y
+sudo yum update -y
+sudo yum install git -y
 ```
 
 Verify Git installation:
@@ -35,36 +35,28 @@ git --version
 Jenkins requires Java to run. Install Java with the following commands:
 
 ```sh
-sudo apt-get update
-sudo apt-get install openjdk-11-jdk -y
+sudo yum update -y
+sudo yum install java-11-amazon-corretto -y
 ```
 
-### 3. Add Jenkins Repository Key
+### 3. Add Jenkins Repository 
 
-Add the Jenkins repository key:
+Add the Jenkins repository :
 
 ```sh
-wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
+sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
 ```
 
-### 4. Add Jenkins Repository
-
-Add the Jenkins repository to the sources list:
-
-```sh
-sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
-sudo apt-get update
-```
-
-### 5. Install Jenkins
+### 4. Install Jenkins
 
 Install Jenkins with the following command:
 
 ```sh
-sudo apt-get install jenkins -y
+sudo yum install jenkins -y
 ```
 
-### 6. Start Jenkins
+### 5. Start Jenkins
 
 Start and enable the Jenkins service:
 
@@ -73,7 +65,7 @@ sudo systemctl start jenkins
 sudo systemctl enable jenkins
 ```
 
-### 7. Access Jenkins
+### 6. Access Jenkins
 
 Open your browser and go to `http://YOUR_SERVER_IP:8080`.
 
@@ -90,12 +82,9 @@ Download Terraform from the official website and install it. Alternatively, you 
 For Ubuntu:
 
 ```sh
-sudo apt-get update
-sudo apt-get install -y gnupg software-properties-common curl
-curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-sudo apt-add-repository "deb https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-sudo apt-get update
-sudo apt-get install terraform
+sudo yum install -y yum-utils
+sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+sudo yum -y install terraform
 ```
 
 Verify Terraform installation:
@@ -119,7 +108,3 @@ terraform --version
 - In the pipeline configuration, under the `Pipeline` section, choose `Pipeline script from SCM`.
 - Select `Git` and provide the repository URL: `https://github.com/YOUR_GITHUB_USERNAME/aws-terraform-jenkins.git`.
 - Specify the branch name (`main` or your branch name).
-
-### Summary
-
-This guide helps you set up a Jenkins pipeline to automate the creation of an AWS EC2 instance and an S3 bucket using Terraform. The Jenkins pipeline includes manual approval steps for better control and security. Follow the installation and configuration steps to get your CI/CD pipeline up and running. The Terraform configurations specify Amazon Linux 2 as the AMI for the EC2 instance.
