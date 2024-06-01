@@ -15,7 +15,7 @@ pipeline {
         stage('Git checkout from prod branch') {
             steps {
                 echo 'Cloning project codebase...'
-                git branch: 'main', url: 'https://github.com/YOUR_GITHUB_USERNAME/aws-terraform-jenkins.git'
+                git branch: 'main', url: 'https://github.com/HILL-TOPCONSULTANCY/terraform-workshop'
                 sh 'ls'
             }
         }
@@ -37,7 +37,7 @@ pipeline {
             steps {
                 echo 'Initializing Terraform for EC2...'
                 sh '''
-                cd ec2
+                cd terraform-workshop
                 terraform init
                 '''
             }
