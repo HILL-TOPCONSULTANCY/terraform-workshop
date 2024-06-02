@@ -10,3 +10,7 @@ resource "aws_instance" "devops" {
     Environment = "PROD"
   }
 }
+
+output "instance_id" {
+  value = aws_instance.devops.id
+}
