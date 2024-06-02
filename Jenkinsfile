@@ -26,38 +26,24 @@ pipeline {
             }
         }
 
-        stage('Change Directory to terraform-workshop') {
-            steps {
-                dir('terraform-workshop') {
-                    sh 'pwd'
-                }
-            }
-        }
-
         stage('Terraform Init') {
             steps {
-                dir('terraform-workshop') {
-                    echo 'Initializing Terraform...'
-                    sh 'terraform init'
-                }
+                echo 'Initializing Terraform...'
+                sh 'terraform init'
             }
         }
 
         stage('Terraform Validate') {
             steps {
-                dir('terraform-workshop') {
-                    echo 'Validating Terraform configuration...'
-                    sh 'terraform validate'
-                }
+                echo 'Validating Terraform configuration...'
+                sh 'terraform validate'
             }
         }
 
         stage('Terraform Plan') {
             steps {
-                dir('terraform-workshop') {
-                    echo 'Planning Terraform deployment...'
-                    sh 'terraform plan'
-                }
+                echo 'Planning Terraform deployment...'
+                sh 'terraform plan'
             }
         }
 
@@ -76,10 +62,8 @@ pipeline {
 
         stage('Terraform Apply') {
             steps {
-                dir('terraform-workshop') {
-                    echo 'Applying Terraform configuration...'
-                    sh 'terraform apply --auto-approve'
-                }
+                echo 'Applying Terraform configuration...'
+                sh 'terraform apply --auto-approve'
             }
         }
 
@@ -91,10 +75,8 @@ pipeline {
 
         stage('Terraform Destroy') {
             steps {
-                dir('terraform-workshop') {
-                    echo 'Destroying Terraform-managed infrastructure...'
-                    sh 'terraform destroy --auto-approve'
-                }
+                echo 'Destroying Terraform-managed infrastructure...'
+                sh 'terraform destroy --auto-approve'
             }
         }
     }
