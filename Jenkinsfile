@@ -48,23 +48,23 @@ pipeline {
             }
         }
 
+        stage('Manual Approval') {
+            steps {
+                script {
+                    def userInput = input(id: 'Proceed', message: 'Approve Terraform Apply?', parameters: [
+                        [$class: 'TextParameterDefinition', defaultValue: 'Yes', description: 'Type Yes to approve', name: 'Approval']
+                    ])
+                    if (userInput != 'Yes') {
+                        error "Pipeline aborted by user"
+                    }
+                }
+            }
+        }
+
         stage('Terraform Apply') {
             steps {
                 echo 'Applying Terraform configuration...'
                 sh 'terraform apply --auto-approve'
-            }
-        }
-
-        stage('Manual Approval to Delete Resources') {
-            steps {
-                input 'Approval required to clean environment'
-            }
-        }
-
-        stage('Terraform Destroy') {
-            steps {
-                echo 'Destroying Terraform-managed infrastructure...'
-                sh 'terraform destroy --auto-approve'
             }
         }
     }
