@@ -92,5 +92,5 @@ sudo yum install git -y
 - Go to Jenkins dashboard.
 - Click on `New Item`, enter a name for your pipeline, select `Pipeline`, and click `OK`.
 - In the pipeline configuration, under the `Pipeline` section, choose `Pipeline script from SCM`.
-- Select `Git` and provide the repository URL: `https://github.com/YOUR_GITHUB_USERNAME/aws-terraform-jenkins.git`.
+- Select `Git` and provide the repository URL: `[https://github.com/YOUR_GITHUB_USERNAME/aws-terraform-jenkins.git](https://github.com/HILL-TOPCONSULTANCY/terraform-workshop)`.
 - Specify the branch name (`main` or your branch name).
