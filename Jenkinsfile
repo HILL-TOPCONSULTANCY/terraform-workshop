@@ -15,40 +15,30 @@ pipeline{
                 sh 'ls'
             }
         }
-    }
-    stages{
         stage("VERIFY TERRAFORM VERSION"){
             steps{
                 echo "veifying terraform version"
                 sh 'terraform --version'
             }
         }
-    }
-    stages{
         stage("INITIALIZE TERRAFORM"){
             steps{
                 echo "initializing terraform"
                 sh 'terraform init'
             }
         }
-    }
-    stages{
         stage("VALIDATING CONFIGURATION"){
             steps{
                 echo "validating terraform configuration"
                 sh 'terraform validate'
             }
         }
-    }
-    stages{
         stage("PLANNING CONFIGURATION"){
             steps{
                 echo "planning terraform configuration"
                 sh 'terraform plan'
             }
         }
-    }
-    stages{
         stage("MANUAL VALIDATION"){
             steps{
                 script {
@@ -61,8 +51,6 @@ pipeline{
                 }
             }
         }
-    } 
-    stages{
         stage("TERRAFORM APPLY"){
             steps{
                 echo "applying configuration"
