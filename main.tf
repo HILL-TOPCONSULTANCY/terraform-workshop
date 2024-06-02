@@ -2,9 +2,27 @@ provider "aws" {
   region = "us-east-1"
 }
 
+resource "aws_vpc" "devops_vpc" {
+  cidr_block = "10.0.0.0/16"
+  tags = {
+    Name        = "devops"
+    Environment = "hill-top"
+  }
+}
+
+resource "aws_subnet" "devops_subnet" {
+  vpc_id     = aws_vpc.devops_vpc.id
+  cidr_block = "10.0.1.0/24"
+  availability_zone = "us-east-1a"
+  tags = {
+    Name        = "devops"
+    Environment = "hill-top"
+  }
+}
+
 resource "aws_security_group" "allow_ssh_http" {
+  vpc_id      = aws_vpc.devops_vpc.id
   description = "Allow SSH and HTTP"
-  vpc_id      = var.vpc_id
 
   ingress {
     from_port   = 22
@@ -28,15 +46,16 @@ resource "aws_security_group" "allow_ssh_http" {
   }
 
   tags = {
-    Name        = "allow_ssh_http"
+    Name        = "devops"
     Environment = "hill-top"
   }
 }
 
 resource "aws_instance" "devops" {
   count                   = 2
-  ami                     = var.ami
-  instance_type           = var.instance_type
+  ami                     = "ami-0d191299f2822b1fa"
+  instance_type           = "t2.micro"
+  subnet_id               = aws_subnet.devops_subnet.id
   vpc_security_group_ids  = [aws_security_group.allow_ssh_http.id]
 
   tags = {
@@ -79,6 +98,21 @@ resource "aws_instance" "devops" {
                   </div>
               </body>
               </html>
-              EOL
               EOF
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+output "vpc_id" {
+  value = aws_vpc.devops_vpc.id
+}
+
+output "instance_ids" {
+  value = aws_instance.devops.*.id
+}
+
+output "subnet_id" {
+  value = aws_subnet.devops_subnet.id
 }
