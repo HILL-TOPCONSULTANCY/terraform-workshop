@@ -1,55 +1,56 @@
-pipeline {
+pipeline{
     agent any
-
     tools {
         terraform 'Terraform'
     }
-
     environment {
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
-
-    stages {
-        stage('Git Checkout') {
-            steps {
-                echo 'Cloning project codebase...'
-                git branch: 'main', url: 'https://github.com/HILL-TOPCONSULTANCY/terraform-workshop'
+    stages{
+        stage("GIT CHECKOUT"){
+            steps{
+                echo "pulling code from codebase"
+                git branch: 'main', changelog: false, url: 'https://github.com/HILL-TOPCONSULTANCY/terraform-workshop.git'
                 sh 'ls'
             }
         }
-
-        stage('Verify Terraform Version') {
-            steps {
-                echo 'Verifying the Terraform version...'
+    }
+    stages{
+        stage("VERIFY TERRAFORM VERSION"){
+            steps{
+                echo "veifying terraform version"
                 sh 'terraform --version'
             }
         }
-
-        stage('Terraform Init') {
-            steps {
-                echo 'Initializing Terraform...'
-                sh 'terraform init -reconfigure'
+    }
+    stages{
+        stage("INITIALIZE TERRAFORM"){
+            steps{
+                echo "initializing terraform"
+                sh 'terraform init'
             }
         }
-
-        stage('Terraform Validate') {
-            steps {
-                echo 'Validating Terraform configuration...'
-                sh 'terraform fmt'
+    }
+    stages{
+        stage("VALIDATING CONFIGURATION"){
+            steps{
+                echo "validating terraform configuration"
                 sh 'terraform validate'
             }
         }
-
-        stage('Terraform Plan') {
-            steps {
-                echo 'Planning Terraform deployment...'
+    }
+    stages{
+        stage("PLANNING CONFIGURATION"){
+            steps{
+                echo "planning terraform configuration"
                 sh 'terraform plan'
             }
         }
-
-        stage('Manual Approval') {
-            steps {
+    }
+    stages{
+        stage("MANUAL VALIDATION"){
+            steps{
                 script {
                     def userInput = input(id: 'Proceed', message: 'Approve Terraform Apply?', parameters: [
                         [$class: 'TextParameterDefinition', defaultValue: 'Yes', description: 'Type Yes to approve', name: 'Approval']
@@ -60,18 +61,18 @@ pipeline {
                 }
             }
         }
-
-        stage('Terraform Apply') {
-            steps {
-                echo 'Applying Terraform configuration...'
-                sh 'terraform apply --auto-approve'
+    } 
+    stages{
+        stage("TERRAFORM APPLY"){
+            steps{
+                echo "applying configuration"
+                sh 'terraform apply --autoapprove'
             }
         }
     }
-
     post {
         always {
-            echo 'Pipeline finished'
+            echo 'pipeline was successful'
         }
     }
 }
