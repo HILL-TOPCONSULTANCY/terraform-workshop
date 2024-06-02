@@ -1,11 +1,11 @@
-output "vpc_id" {
-  value = module.vpc.vpc_id
+output "instance_ids" {
+  value = aws_instance.devops[*].id
 }
 
-output "alb_dns_name" {
-  value = module.alb.this_lb_dns_name
+output "public_ips" {
+  value = aws_instance.devops[*].public_ip
 }
 
-output "ec2_instance_ids" {
-  value = module.ec2.instance_ids
+output "public_dns" {
+  value = aws_instance.devops[*].public_dns
 }
