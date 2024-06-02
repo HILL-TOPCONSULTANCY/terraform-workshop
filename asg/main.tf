@@ -1,6 +1,6 @@
 resource "aws_launch_configuration" "devops" {
   name          = "devops-launch-configuration"
-  image_id      = "ami-0c55b159cbfafe1f0"
+  image_id      = "ami-0d191299f2822b1fa"
   instance_type = var.instance_type
 
   user_data = file("${path.module}/../user_data.sh")

@@ -1,5 +1,5 @@
 variable "ami" {
-  default = "ami-0c55b159cbfafe1f0" # Amazon Linux 2 AMI
+  default = "ami-0d191299f2822b1fa" # Amazon Linux 2 AMI
 }
 variable "instance_type" {
   default = "t2.micro"
