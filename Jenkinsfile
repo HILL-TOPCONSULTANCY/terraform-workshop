@@ -36,6 +36,7 @@ pipeline {
         stage('Terraform Validate') {
             steps {
                 echo 'Validating Terraform configuration...'
+                sh 'terraform fmt'
                 sh 'terraform validate'
             }
         }
