@@ -1,4 +1,4 @@
-resource "aws_instance" "this" {
+resource "aws_instance" "devops" {
   ami             = var.ami
   instance_type   = var.instance_type
   subnet_id       = var.subnet_id
