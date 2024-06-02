@@ -2,15 +2,15 @@ provider "aws" {
   region = var.region
 }
 
-resource "aws_instance" "example" {
+resource "aws_instance" "jenkins-server" {
   ami           = var.ami
   instance_type = var.instance_type
 
   tags = {
-    Name = "TerraformExample"
+    Name = "jenkins-server"
   }
 }
 
 output "instance_ip" {
-  value = aws_instance.example.public_ip
+  value = aws_instance.jenkins-server.public_ip
 }
