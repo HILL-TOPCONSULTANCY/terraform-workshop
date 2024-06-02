@@ -3,8 +3,8 @@ module "alb" {
   version = "6.4.0"
 
   name    = "devops-alb"
-  vpc_id  = module.vpc.vpc_id
-  subnets = module.vpc.public_subnets
+  vpc_id  = var.vpc_id
+  subnets = var.subnets
 
   tags = {
     Name        = "devops-alb"
@@ -16,7 +16,7 @@ resource "aws_lb_target_group" "devops-tg" {
   name     = "devops-tg"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = module.vpc.vpc_id
+  vpc_id   = var.vpc_id
 
   health_check {
     healthy_threshold   = 3
