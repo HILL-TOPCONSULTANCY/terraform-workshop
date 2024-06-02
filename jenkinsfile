@@ -47,7 +47,6 @@ pipeline {
             steps {
                 echo 'Validating Terraform configuration for EC2...'
                 sh '''
-                cd ec2
                 terraform validate
                 '''
             }
@@ -57,7 +56,6 @@ pipeline {
             steps {
                 echo 'Planning Terraform deployment for EC2...'
                 sh '''
-                cd ec2
                 terraform plan -var-file="terraform.tfvars"
                 '''
             }
@@ -80,7 +78,6 @@ pipeline {
             steps {
                 echo 'Applying Terraform configuration for EC2...'
                 sh '''
-                cd ec2
                 terraform apply -var-file="terraform.tfvars" --auto-approve
                 '''
             }
