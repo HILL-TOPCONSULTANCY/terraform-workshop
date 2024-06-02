@@ -8,7 +8,7 @@ This repository contains Terraform configurations to create an AWS EC2 instance 
 Before you begin, ensure you have the following prerequisites:
 
 - **AWS Account**: An AWS account with sufficient permissions to create EC2 instances and S3 buckets.
-- **Jenkins Server**: Jenkins installed and running on a server.
+- **Jenkins Server**: Privision an Amazon Linux 2 instance with t2.medium 4GB RAM.
 - **Git**: Git installed on your local machine or server.
 - **Terraform**: Terraform installed on your local machine or Jenkins server.
 - **SSH Key Pair**: An SSH key pair to access the EC2 instance.
@@ -36,7 +36,6 @@ Jenkins requires Java to run. Install Java with the following commands:
 
 ```sh
 sudo yum update -y
-sudo yum install java-11-amazon-corretto -y
 ```
 
 ### 3. Add Jenkins Repository 
@@ -45,27 +44,33 @@ Add the Jenkins repository :
 
 ```sh
 sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
-sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key # Note: Refer this link to change this key line frequently https://pkg.jenkins.io/redhat-stable/
 ```
-
-### 4. Install Jenkins
-
-Install Jenkins with the following command:
+### 4. Upgrade the repo
+```sh
+sudo yum upgrade
+```
+### 5. Install Java Openjdk11
 
 ```sh
-sudo yum install jenkins -y
+sudo amazon-linux-extras install java-openjdk11
 ```
 
-### 5. Start Jenkins
+### 6. Install anad add Jenkins to sudoers
+```sh
+sudo yum install jenkins 
+sudo su && echo "jenkins ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+```
 
 Start and enable the Jenkins service:
 
 ```sh
-sudo systemctl start jenkins
 sudo systemctl enable jenkins
+sudo systemctl start jenkins
+sudo systemctl status jenkins
 ```
 
-### 6. Access Jenkins
+### 7. Access Jenkins
 
 Open your browser and go to `http://YOUR_SERVER_IP:8080`.
 
@@ -75,31 +80,12 @@ Retrieve the initial admin password:
 sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 ```
 
-### 8. Install Terraform
-
-Download Terraform from the official website and install it. Alternatively, you can use the package manager for your operating system.
-
-For Ubuntu:
+### 8. Install Git
 
 ```sh
-sudo yum install -y yum-utils
-sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
-sudo yum -y install terraform
+sudo yum install git -y
 ```
 
-Verify Terraform installation:
-
-```sh
-terraform --version
-```
-
-## Jenkins Configuration
-
-### 1. Configure Jenkins Credentials
-
-- Go to Jenkins dashboard.
-- Navigate to `Manage Jenkins` > `Manage Credentials` > `(global)` > `Add Credentials`.
-- Add your AWS Access Key ID and Secret Access Key as separate credentials.
 
 ### 2. Create a New Jenkins Pipeline
 
