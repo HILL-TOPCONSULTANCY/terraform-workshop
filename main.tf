@@ -14,6 +14,7 @@ resource "aws_subnet" "devops_subnet" {
   vpc_id     = aws_vpc.devops_vpc.id
   cidr_block = "10.0.1.0/24"
   availability_zone = "us-east-1a"
+  map_public_ip_on_launch = true
   tags = {
     Name        = "devops"
     Environment = "hill-top"
@@ -57,6 +58,7 @@ resource "aws_instance" "devops" {
   instance_type           = "t2.micro"
   subnet_id               = aws_subnet.devops_subnet.id
   vpc_security_group_ids  = [aws_security_group.allow_ssh_http.id]
+  associate_public_ip_address = true
 
   tags = {
     Name        = "devops-${count.index + 1}"
@@ -88,7 +90,7 @@ resource "aws_instance" "devops" {
               </head>
               <body>
                   <div class="content">
-                      <h1>Welcome to Hill-Top Consultancy DevOps CLASS 2024A</h1>
+                      <h1>Welcome to Hill-Top Consultancy DevOps CLASS 2024A</h2>
                       <h2>This is the Current Host IP Address: $HOST_IP</h2>
                       <p>Current Date and Time: $CURRENT_DATE</p>
                       <p>Hill-Top Consultancy is a premier IT training and consulting firm that was founded with the vision of empowering professionals and organizations by providing them with cutting-edge skills in DevOps, Cloud Computing, and Software Development. Our ethos is built on the foundation of continuous learning and innovation, which we believe are essential in navigating the ever-evolving technology landscape.</p>
@@ -111,6 +113,10 @@ output "vpc_id" {
 
 output "instance_ids" {
   value = aws_instance.devops.*.id
+}
+
+output "public_ips" {
+  value = aws_instance.devops.*.public_ip
 }
 
 output "subnet_id" {
