@@ -24,7 +24,7 @@ cat > /var/www/html/index.html <<EOF
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Hill-Top Consultancy DevOps CLASS 2024A</title>
+    <title>Welcome to Hill-Top Consultancy DevOps CLASS 2024B</title>
     <style>
         body {
             background-color: #f0f0f0;
