@@ -44,6 +44,7 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 echo 'Planning Terraform deployment...'
+                sh 'terraform init -reconfigure'
                 sh 'terraform plan'
             }
         }
