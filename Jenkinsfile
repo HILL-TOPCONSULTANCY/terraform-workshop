@@ -36,7 +36,6 @@ pipeline {
         stage('Terraform Validate') {
             steps {
                 echo 'Validating Terraform configuration...'
-                sh 'terraform init -reconfigure'
                 sh 'terraform fmt'
                 sh 'terraform validate'
             }
@@ -45,7 +44,6 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 echo 'Planning Terraform deployment...'
-                sh 'terraform init -reconfigure'
                 sh 'terraform plan'
             }
         }
