@@ -33,7 +33,7 @@ pipeline {
             }
         }
 
-        stage('Terraform init EC2') {
+        stage('Terraform init') {
             steps {
                 echo 'Initializing Terraform for EC2...'
                 sh '''
@@ -43,7 +43,7 @@ pipeline {
             }
         }
 
-        stage('Terraform validate EC2') {
+        stage('Terraform validate') {
             steps {
                 echo 'Validating Terraform configuration for EC2...'
                 sh '''
