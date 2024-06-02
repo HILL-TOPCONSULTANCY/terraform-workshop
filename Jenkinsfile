@@ -36,6 +36,7 @@ pipeline {
         stage('Terraform Validate') {
             steps {
                 echo 'Validating Terraform configuration...'
+                sh 'terraform init -reconfigure'
                 sh 'terraform fmt'
                 sh 'terraform validate'
             }
@@ -65,6 +66,7 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 echo 'Applying Terraform configuration...'
+                sh 'terraform init -reconfigure'
                 sh 'terraform apply --auto-approve'
             }
         }
@@ -78,6 +80,7 @@ pipeline {
         stage('Terraform Destroy') {
             steps {
                 echo 'Destroying Terraform-managed infrastructure...'
+                sh 'terraform init -reconfigure'
                 sh 'terraform destroy --auto-approve'
             }
         }
