@@ -91,7 +91,6 @@ resource "aws_instance" "devops" {
   subnet_id               = aws_subnet.devops_subnet.id
   vpc_security_group_ids  = [aws_security_group.allow_ssh_http.id]
   associate_public_ip_address = true
-  user_data = file("${path.module}/user_data.sh")
 
   tags = {
     Name        = "devops-${count.index + 1}"
